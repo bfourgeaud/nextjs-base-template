@@ -29,15 +29,17 @@ import {
 } from "@/components/icons";
 
 import { Logo } from "@/components/icons";
-import { ReactNode, useReducer } from "react";
+import { useReducer } from "react";
 import { Bars3CenterLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { signOut } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 import { useSession } from "next-auth/react"
+import { Button } from "@nextui-org/button";
+import UserMenu from "./user-menu";
 
-export const Navbar = ({ children }: { children: ReactNode }) => {
+export const Navbar = () => {
 	const pathname = usePathname()
 	const session = useSession()
 
@@ -103,7 +105,12 @@ export const Navbar = ({ children }: { children: ReactNode }) => {
 				</NavbarItem>
 				<NavbarItem>{searchInput}</NavbarItem>
 				<NavbarItem>
-					{children}
+					{session.data?.user ?
+						<UserMenu user={session.data?.user} /> :
+						<Button className={"text-sm font-normal"} variant="flat" onClick={() => signIn()}>
+							Sign In
+						</Button>
+					}
 				</NavbarItem>
 			</NavbarContent>
 

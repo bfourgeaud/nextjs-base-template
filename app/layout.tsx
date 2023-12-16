@@ -6,8 +6,7 @@ import { Providers } from "./providers";
 import { Navbar } from "@/components/navbar";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
-import { Suspense } from "react";
-import Profile from "@/components/profile";
+import { auth } from "@/auth";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -29,11 +28,13 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const session = await auth()
+	
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head />
@@ -43,13 +44,9 @@ export default function RootLayout({
 					fontSans.variable
 				)}
 			>
-				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }} session={session}>
 					<div className="relative flex flex-col h-screen">
-						<Navbar>
-							<Suspense fallback={<div>Loading...</div>}>
-								<Profile />
-							</Suspense>
-						</Navbar>
+						<Navbar />
 						<main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
 							{children}
 						</main>
